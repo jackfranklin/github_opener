@@ -1,6 +1,6 @@
 {
   "name": "github_opener",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Open Github repositories quickly. Just because.",
   "preferGlobal": "true",
   "bin": {
@@ -10,6 +10,6 @@
   "author": "Jack Franklin",
   "license": "BSD",
   "dependencies": {
-    "commander": "~1.1.1"
+    "cli_router": "~0.1.0"
   }
 }

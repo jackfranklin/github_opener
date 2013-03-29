@@ -1,8 +1,6 @@
 #! /usr/bin/env node
 
-
-var program = require("commander");
-
+var router = require("cli_router");
 var exec = require("child_process").exec;
 
 var url = "http://github.com/";
@@ -12,40 +10,38 @@ if(!repo) {
   return;
 }
 
-program
-  .version("0.0.0")
-  .option("-i, --issues", "Go to Issues")
-  .option("-p, --pull", "Go to pull requests")
-  .option("-n, --number <num>", "Go to the issue/pull with this number", parseInt)
-  .parse(process.argv);
-
 url += repo;
 
-if(program.issues && !program.number) {
-  url += "/issues";
-}
-
-if(program.pull && !program.number) {
-  url += "/pulls"
-}
-
-if(program.number) {
-  if(program.pull) {
-    url += "/pull";
-  }
-  if(program.issue) {
-    url += "/issues";
-  }
-
-  url += "/" + program.number;
-}
-
-
-exec("open " + url, function(err) {
-  if(err) throw err;
-  console.log("Opened the link. My work here is done.");
-  return;
+router.match("-i <num>", function(params) {
+  url += "/issues/" + params.num;
+  openUrl();
 });
+
+router.match("-p <num>", function(params) {
+  url += "/pull/" + params.num;
+  openUrl();
+});
+
+router.match("-i", function(params) {
+  url += "/issues/";
+  openUrl();
+});
+
+router.match("-p", function(params) {
+  url += "/pulls/";
+  openUrl();
+});
+
+router.match("*", openUrl);
+
+function openUrl() {
+  exec("open " + url, function(err) {
+    if(err) throw err;
+    console.log("Opened the link. My work here is done.");
+  });
+}
+
+router.process(process.argv.slice(3).join(" "));
 
 
 
